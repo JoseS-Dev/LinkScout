@@ -9,7 +9,8 @@ export const envSchema = createEnv({
     server: {
         NODE_ENV: z.enum(["development", "production"]).default("development"),
         TELEGRAM_BOT_TOKEN: z.string().min(1, "TELEGRAM_BOT_TOKEN is required"),
-        PORT: z.coerce.number().default(3000)
+        PORT: z.coerce.number().default(3000),
+        API_REMOTEOK: z.string().url().default("https://prueba.com/api")
     },
     client: {},
     clientPrefix: 'VITE_',
