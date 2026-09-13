@@ -38,6 +38,42 @@ export class FavoriteService {
         }
     }
 
+    // Método para eliminar un favorito de un usuario
+    async removeFavorite(userId: number, jobId: string) {
+        // Se verifica que exista el usuario en cuestión
+        const existingUser = await prisma.user.findUnique({
+            where: { id: BigInt(userId) }
+        });
+        if(!existingUser) throw new Error("El usuario no existe en la base de datos.");
+        // Se elimina el favorito de la base de datos
+        const deletedFavorite = await prisma.favorite.deleteMany({
+            where: {
+                userId: BigInt(userId),
+                jobId: jobId
+            }
+        });
+        if(deletedFavorite.count > 0){
+            logger.info(`Se ha eliminado el favorito con jobId ${jobId} para el usuario ${userId}`);
+            return true;
+        }
+        return false;
+    }
+
+    // Método para eliminar un favorito por su ID de la base de datos
+    async removeFavoriteById(userId: number, favId: number) {
+        const deletedFavorite = await prisma.favorite.deleteMany({
+            where: {
+                id: favId,
+                userId: BigInt(userId)
+            }
+        });
+        if(deletedFavorite.count > 0){
+            logger.info(`Se ha eliminado el favorito con id ${favId} para el usuario ${userId}`);
+            return true;
+        }
+        return false;
+    }
+
     // Método para obtener los favoritos de un usuario
     async getFavorites(userId: number){
         return await prisma.favorite.findMany({
