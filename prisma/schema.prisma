@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Modelo de los ususarios que interactúan con el bot de Telegram
+model User {
+  id BigInt @id
+  name String?
+  createdAt DateTime @default(now())
+
+  favorites Favorite[]
+
+  @@map("users")
+}
+
+// Modelo para los empelos favoritos de los ususarios
+model Favorite {
+  id Int @id @default(autoincrement())
+  userId BigInt
+  jobId String
+  title String
+  company String
+  salary String?
+  location String?
+  link String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, jobId])
+  @@map("favorites")
+}
