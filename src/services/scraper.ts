@@ -55,6 +55,7 @@ export async function extractJobsFromRemoteok(filters: Filters): Promise<Job[]> 
             const dateText = daysOfSeniority === 0 ? 'Hoy' : `${daysOfSeniority} día(s) atrás`;
             const salaryText = job.salary_max ? `$${job.salary_min} - $${job.salary_max}` : (job.salary_min ? `$${job.salary_min}` : 'No especificado');
             return {
+                id: job.id,
                 title: job.position,
                 company: job.company,
                 link: job.url,

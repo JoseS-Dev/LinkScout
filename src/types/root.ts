@@ -10,6 +10,7 @@ export interface Filters {
 
 // Se define la interface para el objeto de los empleos
 export interface Job {
+    id: string,
     title: string,
     company: string,
     link: string

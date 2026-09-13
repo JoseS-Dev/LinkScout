@@ -28,6 +28,18 @@ function encodeFilters(filters: Filters): string {
     ].join('|');
 }
 
+// Función que decodifica la cadena codificada y reconstruye los filtros de búsqueda
+export function decodeFilters(filterCode: string): Filters {
+    const fields = filterCode.split('|');
+    return {
+        term: decodeURIComponent(fields[0] ?? ''),
+        salaryMin: parseInt(fields[1] ?? '0', 10) || 0,
+        salaryMax: parseInt(fields[2] ?? '0', 10) || 0,
+        tagMatch: decodeURIComponent(fields[3] ?? ''),
+        daysOfSeniority: parseInt(fields[4] ?? '0', 10) || 0
+    };
+}
+
 // Función que genera los botones de navegación para la paginación de empleos
 export function generatePaginationButtons(filters: Filters, currentPage: number, totalPages: number) : ReturnType<typeof Markup.inlineKeyboard> {
     const buttons = [];
@@ -43,5 +55,9 @@ export function generatePaginationButtons(filters: Filters, currentPage: number,
         buttons.push(Markup.button.callback('Siguiente ➡️', `page:${filterCode}|${currentPage + 1}`));
     }
 
-    return Markup.inlineKeyboard([buttons])
+    const secondRowButtonsAction = [
+        Markup.button.callback('⭐ Guardar Favorito', `fav:${filterCode}:${currentPage}`)
+    ]
+
+    return Markup.inlineKeyboard([buttons, secondRowButtonsAction]);
 }
