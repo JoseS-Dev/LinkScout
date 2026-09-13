@@ -12,20 +12,26 @@ LinkScout/
 │   │   ├── index.ts              # Registra todos los comandos en el bot
 │   │   ├── start.ts              # /start — Bienvenida
 │   │   ├── help.ts               # /help — Lista de comandos disponibles
-│   │   └── jobs.ts               # /jobs — Búsqueda de empleos
+│   │   ├── jobs.ts               # /jobs — Búsqueda de empleos
+│   │   ├── handlerPagination.ts  # Callbacks de botones de paginación
+│   │   └── handlerFavorite.ts    # /favorites + callback para guardar favoritos
 │   ├── config/
 │   │   ├── config.ts             # Objeto de configuración centralizado
+│   │   ├── prisma/prisma.ts      # Cliente Prisma con adaptador Postgres
 │   │   ├── pino/logger.ts        # Logger con pino (pino-pretty en desarrollo)
 │   │   └── validation/env.ts     # Validación de variables de entorno con zod
 │   ├── services/
-│   │   └── scraper.ts            # Consumo de la API de RemoteOK y filtrado
+│   │   ├── scraper.ts            # Consumo de la API de RemoteOK y filtrado
+│   │   └── favoriteService.ts    # Persistencia de favoritos (addFavorite/getFavorites)
 │   ├── types/
-│   │   └── root.ts               # Interfaces compartidas (Job, RemoteOkResponse)
+│   │   └── root.ts               # Interfaces compartidas (Job, Filters, RemoteOkResponse)
 │   └── utils/
-│       └── functions.ts          # Función loadEnv: resuelve el .env según entorno
-├── .env.development              # Variables del entorno de desarrollo (no trackeado)
-├── .env.production               # Variables del entorno de producción (no trackeado)
-├── .env.example                  # Ejemplo de variables requeridas
+│       ├── functions.ts          # loadEnv + calculateDaysofSince
+│       └── pagination.ts         # Texto de empleo, botones y codificación de filtros
+├── prisma/
+│   ├── schema.prisma             # Modelos User y Favorite
+│   └── migrations/               # Migraciones de base de datos
+├── prisma.config.ts              # Configuración de Prisma CLI
 ├── package.json
 ├── pnpm-lock.yaml
 └── tsconfig.json
@@ -39,6 +45,7 @@ LinkScout/
 | **@t3-oss/env-core** + **zod** | Definición y validación estricta de variables de entorno |
 | **dotenv** | Carga de archivos `.env` según el entorno activo |
 | **pino** + **pino-pretty** | Logging estructurado; en desarrollo se muestra coloreado y legible |
+| **prisma** + **@prisma/client** + **@prisma/adapter-pg** | ORM y migraciones; persistencia de favoritos en PostgreSQL |
 | **tsx** | Ejecución de TypeScript en desarrollo con hot-reload (`tsx watch`) |
 | **cross-env** | Configuración cross-platform de `NODE_ENV` en scripts |
 | **typescript** | Compilación y verificación de tipos estrictos |
@@ -50,6 +57,9 @@ LinkScout/
 | `/start` | Mensaje de bienvenida con el nombre del usuario |
 | `/help` | Lista todos los comandos disponibles |
 | `/jobs <término> [filtros]` | Busca empleos en RemoteOK con navegación por botones (hasta 10 resultados). Filtros opcionales: `min:<mínimo>`, `max:<máximo>`, `tag:<tag>`, `dias:<días>`. Ej.: `/jobs react min:8000 tag:typescript dias:7` |
+| `/favorites` | Muestra las vacantes guardadas como favoritas del usuario |
+
+Cada resultado de `/jobs` incluye el botón **⭐ Guardar Favorito**, que persiste la vacante (PostgreSQL vía Prisma) y evita duplicados por usuario.
 
 ## Variables de entorno
 
@@ -82,10 +92,10 @@ pnpm dev
 
 ## Futuras implementaciones
 
-- [ ] Base de datos para guardar búsquedas o empleos favoritos
 - [ ] Notificaciones programadas: alertas diarias/semanales de nuevas ofertas
 - [ ] Comando `/subscribe` para recibir actualizaciones automáticas por categoría
 - [ ] Cache de resultados en memoria para evitar pegar a la API en cada paginación
+- [ ] Botón para eliminar un favorito individualmente
 - [ ] Implementar Playwright para scraping de páginas que no exponen API JSON
 - [ ] Script de build (`tsc`) y despliegue en producción
 - [ ] Tests unitarios y de integración
