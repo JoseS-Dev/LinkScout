@@ -1,7 +1,7 @@
 import { Context } from 'telegraf';
 import { logger } from '../config/pino/logger.js';
 import { extractJobsFromRemoteok } from '../services/scraper.js';
-import { decodeFilters } from '../utils/pagination.js';
+import { decodeFilters } from '../utils/functions.js';
 import { FavoriteService } from '../services/favoriteService.js';
 
 const favoriteService = new FavoriteService();

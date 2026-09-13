@@ -1,21 +1,9 @@
 import { Context } from 'telegraf';
 import { extractJobsFromRemoteok } from '../services/scraper.js';
-import { generateJobText, generatePaginationButtons, decodeFilters } from '../utils/pagination.js';
+import { generateJobText, generatePaginationButtons } from '../utils/pagination.js';
+import { parsePaginationData } from '../utils/functions.js';
 import { logger } from '../config/pino/logger.js';
-import type { Filters } from '../types/root.js';
 
-// Función que decodifica el callback data y reconstruye los filtros de búsqueda
-function parsePaginationData(callbackData: string): { filters: Filters, page: number } | null {
-    const parts = callbackData.split(':');
-    if(parts[0] !== 'page') return null;
-
-    const fields = (parts[1] ?? '').split('|');
-
-    return {
-        filters: decodeFilters(fields.slice(0, 5).join('|')),
-        page: parseInt(fields[5] ?? '0', 10)
-    }
-}
 
 // Función para manejar los botones de paginación con los empleos
 export async function handlePagination(ctx: Context){
