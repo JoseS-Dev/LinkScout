@@ -9,6 +9,7 @@ export async function commandHelp(ctx: Context){
       ``,
       `/start - Mensaje de bienvenida`,
       `/jobs <término> - Busca empleos remotos por término`,
+      `/favorites - Muestra tus vacantes favoritas`,
       `/help - Muestra esta ayuda`
    ].join("\n");
 
