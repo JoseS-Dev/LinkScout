@@ -1,4 +1,5 @@
 import { Markup } from 'telegraf';
+import { encodeFilters } from './functions.js';
 import type { Job, Filters } from '../types/root.js';
 
 // Función que genera el texto del empleo en una posición actual
@@ -17,28 +18,6 @@ export function generateJobText(job: Job, index: number, total: number) : string
     )
 }
 
-// Función que codifica los filtros en una cadena segura para el callback data
-function encodeFilters(filters: Filters): string {
-    return [
-        encodeURIComponent(filters.term ?? ''),
-        filters.salaryMin ?? 0,
-        filters.salaryMax ?? 0,
-        encodeURIComponent(filters.tagMatch ?? ''),
-        filters.daysOfSeniority ?? 0
-    ].join('|');
-}
-
-// Función que decodifica la cadena codificada y reconstruye los filtros de búsqueda
-export function decodeFilters(filterCode: string): Filters {
-    const fields = filterCode.split('|');
-    return {
-        term: decodeURIComponent(fields[0] ?? ''),
-        salaryMin: parseInt(fields[1] ?? '0', 10) || 0,
-        salaryMax: parseInt(fields[2] ?? '0', 10) || 0,
-        tagMatch: decodeURIComponent(fields[3] ?? ''),
-        daysOfSeniority: parseInt(fields[4] ?? '0', 10) || 0
-    };
-}
 
 // Función que genera los botones de navegación para la paginación de empleos
 export function generatePaginationButtons(filters: Filters, currentPage: number, totalPages: number) : ReturnType<typeof Markup.inlineKeyboard> {
