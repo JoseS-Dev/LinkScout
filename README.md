@@ -49,7 +49,7 @@ LinkScout/
 |---|---|
 | `/start` | Mensaje de bienvenida con el nombre del usuario |
 | `/help` | Lista todos los comandos disponibles |
-| `/jobs <término>` | Busca empleos en RemoteOK que coincidan con el término dado (empresa, puesto o tags); devuelve hasta 10 resultados con título, empresa, tags, salario y enlace |
+| `/jobs <término> [filtros]` | Busca empleos en RemoteOK con navegación por botones (hasta 10 resultados). Filtros opcionales: `min:<mínimo>`, `max:<máximo>`, `tag:<tag>`, `dias:<días>`. Ej.: `/jobs react min:8000 tag:typescript dias:7` |
 
 ## Variables de entorno
 
@@ -82,11 +82,10 @@ pnpm dev
 
 ## Futuras implementaciones
 
-- [ ] Paginación o botones interactivos (InlineKeyboard) para navegar entre resultados
-- [ ] Filtros avanzados (rango salarial, tags específicos, fecha de publicación)
 - [ ] Base de datos para guardar búsquedas o empleos favoritos
 - [ ] Notificaciones programadas: alertas diarias/semanales de nuevas ofertas
 - [ ] Comando `/subscribe` para recibir actualizaciones automáticas por categoría
+- [ ] Cache de resultados en memoria para evitar pegar a la API en cada paginación
 - [ ] Implementar Playwright para scraping de páginas que no exponen API JSON
 - [ ] Script de build (`tsc`) y despliegue en producción
 - [ ] Tests unitarios y de integración

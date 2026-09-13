@@ -19,8 +19,9 @@ LinkScout is a Telegram bot (Telegraf) that fetches remote-job listings from the
 
 ## Architecture
 - `src/app.ts` — entrypoint: builds Telegraf bot, registers commands, launches; exits if token missing.
-- `src/commands/` — `index.ts` registers handlers onto the bot; only `/jobs` exists.
-- `src/services/scraper.ts` — fetches RemoteOK API and filters by term. Imports `playwright` but never uses it (scraping is plain `fetch`, no headless browser).
+- `src/commands/` — `index.ts` registers handlers onto the bot; `/jobs`, `/start`, `/help` exist, plus `handlerPagination.ts` wired via `bot.action(/^page:.+/)`.
+- `src/services/scraper.ts` — fetches RemoteOK API and filters by a `Filters` object (term, salaryMin/Max, tagMatch, daysOfSeniority). Imports `playwright` but never uses it (scraping is plain `fetch`, no headless browser).
+- `src/utils/pagination.ts` — job text + inline-keyboard pagination buttons; filters are URL-encoded into the callback data (`page:<term>|<min>|<max>|<tag>|<dias>|<page>`) and decoded in `handlerPagination.ts`. Beware Telegram's 64-byte callback data limit.
 - `src/config/` — `config.ts` exposes validated env; `pino/logger.ts` pretty-prints in dev.
 - `src/types/root.ts` — shared interfaces.
 
