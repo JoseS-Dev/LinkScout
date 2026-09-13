@@ -57,7 +57,7 @@ LinkScout/
 | `/start` | Mensaje de bienvenida con el nombre del usuario |
 | `/help` | Lista todos los comandos disponibles |
 | `/jobs <término> [filtros]` | Busca empleos en RemoteOK con navegación por botones (hasta 10 resultados). Filtros opcionales: `min:<mínimo>`, `max:<máximo>`, `tag:<tag>`, `dias:<días>`. Ej.: `/jobs react min:8000 tag:typescript dias:7` |
-| `/favorites` | Muestra las vacantes guardadas como favoritas del usuario |
+| `/favorites` | Muestra las vacantes guardadas como favoritas, con botón ❌ para eliminar cada una |
 
 Cada resultado de `/jobs` incluye el botón **⭐ Guardar Favorito**, que persiste la vacante (PostgreSQL vía Prisma) y evita duplicados por usuario.
 
@@ -92,10 +92,10 @@ pnpm dev
 
 ## Futuras implementaciones
 
+- [ ] Botón ❌ contextual en `/jobs` (estado del favorito por vacante vía lookup en BD)
 - [ ] Notificaciones programadas: alertas diarias/semanales de nuevas ofertas
 - [ ] Comando `/subscribe` para recibir actualizaciones automáticas por categoría
 - [ ] Cache de resultados en memoria para evitar pegar a la API en cada paginación
-- [ ] Botón para eliminar un favorito individualmente
 - [ ] Implementar Playwright para scraping de páginas que no exponen API JSON
 - [ ] Script de build (`tsc`) y despliegue en producción
 - [ ] Tests unitarios y de integración

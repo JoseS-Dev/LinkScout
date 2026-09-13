@@ -21,10 +21,10 @@ LinkScout is a Telegram bot (Telegraf) that fetches remote-job listings from the
 
 ## Architecture
 - `src/app.ts` — entrypoint: builds Telegraf bot, registers commands, launches; exits if token missing.
-- `src/commands/` — `index.ts` registers handlers onto the bot; `/jobs`, `/start`, `/help`, `/favorites` exist, plus `handlerPagination.ts` (wired via `bot.action(/^page:.+/)`) and `handlerFavorite.ts` (`bot.action(/^fav:.+/)`).
+- `src/commands/` — `index.ts` registers handlers onto the bot; `/jobs`, `/start`, `/help`, `/favorites` exist, plus `handlerPagination.ts` (wired via `bot.action(/^page:.+/)`) and `handlerFavorite.ts` (single `bot.action(/^fav:.+/)` dispatcher for add/remove).
 - `src/services/scraper.ts` — fetches RemoteOK API and filters by a `Filters` object (term, salaryMin/Max, tagMatch, daysOfSeniority). Imports `playwright` but never uses it (scraping is plain `fetch`, no headless browser).
 - `src/services/favoriteService.ts` + `src/config/prisma/prisma.ts` — Persistence layer: Prisma 7 + `@prisma/adapter-pg`, models `User`/`Favorite` in `prisma/schema.prisma`; client generated to `src/generated/prisma` (gitignored). `addFavorite` returns `null` on duplicate (P2002).
-- `src/utils/pagination.ts` — job text + inline-keyboard pagination buttons; filters are URL-encoded into the callback data (`page:<term>|<min>|<max>|<tag>|<dias>|<page>`, `fav:<...>:<index>`) and decoded by `decodeFilters` in `handlerPagination.ts`/`handlerFavorite.ts`. Beware Telegram's 64-byte callback data limit.
+- `src/utils/pagination.ts` — job text + inline-keyboard pagination buttons; filters are URL-encoded into the callback data (`page:<term>|<min>|<max>|<tag>|<dias>|<page>`, `fav:<...>|<page>|<add|remove>`), decoded/reused via `encodeFilters`/`decodeFilters`/`parsePaginationData` in `functions.ts`. `commandFavorites` sends `fav:del:<favId>` delete buttons (robust — DB id, no API index drift). Beware Telegram's 64-byte callback data limit.
 - `src/config/` — `config.ts` exposes validated env; `pino/logger.ts` pretty-prints in dev.
 - `src/types/root.ts` — shared interfaces.
 
