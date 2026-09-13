@@ -1,11 +1,11 @@
-import { chromium } from "playwright";
 import { config } from "../config/config.js";
 import { logger } from "../config/pino/logger.js";
-import type { Job, RemoteOkResponse } from "../types/root.js";
+import type { Job, RemoteOkResponse, Filters } from "../types/root.js";
+import { calculateDaysofSince } from "../utils/functions.js";
 
-export async function extractJobsFromRemoteok(searchTerm: string): Promise<Job[]> {
+export async function extractJobsFromRemoteok(filters: Filters): Promise<Job[]> {
     
-    logger.info(`Iniciando extracción de empleos de RemoteOk con el término de búsqueda: ${searchTerm}`);
+    logger.info('Iniciando extracción de empleos de RemoteOk con el término de búsqueda');
     
     try{
         const response = await fetch(`${config.apiRemoteOk}`, {
@@ -17,22 +17,52 @@ export async function extractJobsFromRemoteok(searchTerm: string): Promise<Job[]
         const data: RemoteOkResponse[] = await response.json();
 
         const jobs = data.filter((item) => item && item.position && item.company)
-        const term = searchTerm.toLowerCase();
-
         const filteredJobs = jobs.filter((job) => {
-            const titleMatch = job.position.toLowerCase().includes(term);
-            const companyMatch = job.company.toLowerCase().includes(term);
-            const tagsMatch = job.tags?.some(tag => tag.toLowerCase().includes(term)) ?? false;
-            return titleMatch || companyMatch || tagsMatch;
+            if(filters.term){
+                const t = filters.term.toLowerCase();
+                const titleMatch = job.position.toLowerCase().includes(t);
+                const companyMatch = job.company.toLowerCase().includes(t);
+                const tagsMatch = job.tags?.some(tag => tag.toLowerCase().includes(t));
+                if(!titleMatch && !companyMatch && !tagsMatch) return false;
+            }
+
+            if(filters.salaryMin && filters.salaryMin > 0){
+                const salaryOffer = job.salary_max || job.salary_min || 0;
+                if(salaryOffer < filters.salaryMin) return false;
+            }
+
+            if(filters.salaryMax && filters.salaryMax > 0){
+                const salaryOffer = job.salary_min || job.salary_max || 0;
+                if(salaryOffer > filters.salaryMax) return false;
+            }
+
+            if(filters.tagMatch){
+                const tagMatchLower = filters.tagMatch.toLowerCase();
+                const hasMatchingTag = job.tags?.some(tag => tag.toLowerCase().includes(tagMatchLower));
+                if(!hasMatchingTag) return false;
+            }
+
+            if(filters.daysOfSeniority && filters.daysOfSeniority > 0){
+                const daysSincePublished = calculateDaysofSince(job.date);
+                if(daysSincePublished > filters.daysOfSeniority) return false;
+            }
+
+            return true;
         })
 
-        return filteredJobs.slice(0, 10).map((job) => ({
-            title: job.position,
-            company: job.company,
-            link: job.url,
-            tags: job.tags || [],
-            salary: job.salary_min && job.salary_max ? `$${job.salary_min} - $${job.salary_max}` : "Not specified"
-        }));
+        return filteredJobs.map((job) => {
+            const daysOfSeniority = calculateDaysofSince(job.date);
+            const dateText = daysOfSeniority === 0 ? 'Hoy' : `${daysOfSeniority} día(s) atrás`;
+            const salaryText = job.salary_max ? `$${job.salary_min} - $${job.salary_max}` : (job.salary_min ? `$${job.salary_min}` : 'No especificado');
+            return {
+                title: job.position,
+                company: job.company,
+                link: job.url,
+                tags: job.tags || [],
+                salary: salaryText,
+                datePublished: dateText
+            }
+        })
     }
     catch(error){
         logger.error(`Error al extraer empleos de RemoteOk: ${error}`);
