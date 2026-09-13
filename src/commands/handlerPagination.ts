@@ -1,6 +1,6 @@
 import { Context } from 'telegraf';
 import { extractJobsFromRemoteok } from '../services/scraper.js';
-import { generateJobText, generatePaginationButtons } from '../utils/pagination.js';
+import { generateJobText, generatePaginationButtons, decodeFilters } from '../utils/pagination.js';
 import { logger } from '../config/pino/logger.js';
 import type { Filters } from '../types/root.js';
 
@@ -12,13 +12,7 @@ function parsePaginationData(callbackData: string): { filters: Filters, page: nu
     const fields = (parts[1] ?? '').split('|');
 
     return {
-        filters: {
-            term: decodeURIComponent(fields[0] ?? ''),
-            salaryMin: parseInt(fields[1] ?? '0', 10) || 0,
-            salaryMax: parseInt(fields[2] ?? '0', 10) || 0,
-            tagMatch: decodeURIComponent(fields[3] ?? ''),
-            daysOfSeniority: parseInt(fields[4] ?? '0', 10) || 0
-        },
+        filters: decodeFilters(fields.slice(0, 5).join('|')),
         page: parseInt(fields[5] ?? '0', 10)
     }
 }
