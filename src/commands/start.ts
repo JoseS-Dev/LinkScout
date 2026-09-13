@@ -6,8 +6,12 @@ export async function commandStart(ctx: Context){
    logger.info("Comando /start recibido");
 
    await ctx.reply(
-      `¡Hola, ${firstName}! 👋\n\nSoy *LinkScout*, tu bot para encontrar empleos remotos.\n` +
-      `Usa /jobs <término> para buscar ofertas o /help para ver todos los comandos.`,
+      `¡Hola, ${firstName}! 👋\n\n` +
+      `Soy *LinkScout*, tu bot para encontrar empleos remotos.\n\n` +
+      `📌 *Comandos principales:*\n` +
+      `/jobs <término> - Busca ofertas con filtros opcionales (min:, max:, tag:, dias:)\n` +
+      `/favorites - Consulta y gestiona tus vacantes favoritas\n` +
+      `/help - Muestra todos los comandos`,
       { parse_mode: 'Markdown' }
    );
 }

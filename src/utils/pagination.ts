@@ -20,7 +20,12 @@ export function generateJobText(job: Job, index: number, total: number) : string
 
 
 // Función que genera los botones de navegación para la paginación de empleos
-export function generatePaginationButtons(filters: Filters, currentPage: number, totalPages: number) : ReturnType<typeof Markup.inlineKeyboard> {
+export function generatePaginationButtons(
+    filters: Filters, 
+    currentPage: number, 
+    totalPages: number,
+    isFavorite: boolean = false
+) : ReturnType<typeof Markup.inlineKeyboard> {
     const buttons = [];
     const filterCode = encodeFilters(filters);
 
@@ -34,9 +39,9 @@ export function generatePaginationButtons(filters: Filters, currentPage: number,
         buttons.push(Markup.button.callback('Siguiente ➡️', `page:${filterCode}|${currentPage + 1}`));
     }
 
-    const secondRowButtonsAction = [
-        Markup.button.callback('⭐ Guardar Favorito', `fav:${filterCode}:${currentPage}`)
-    ]
+    const buttonFavorite = isFavorite
+        ? Markup.button.callback('❌ Quitar de favoritos', `fav:${filterCode}|${currentPage}|remove`)
+        : Markup.button.callback('⭐ Agregar a favoritos', `fav:${filterCode}|${currentPage}|add`);
 
-    return Markup.inlineKeyboard([buttons, secondRowButtonsAction]);
+    return Markup.inlineKeyboard([buttons, [buttonFavorite]]);
 }
