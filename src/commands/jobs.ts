@@ -1,8 +1,11 @@
 import { Context } from "telegraf";
 import { extractJobsFromRemoteok } from "../services/scraper.js";
 import { generateJobText, generatePaginationButtons } from "../utils/pagination.js";
+import { FavoriteService } from "../services/favoriteService.js";
 import { logger } from "../config/pino/logger.js";
 import type { Filters } from "../types/root.js";
+
+const favoriteService = new FavoriteService();
 
 export async function commandJobs(ctx: Context){
    if(!ctx.message || !("text" in ctx.message)) return;
@@ -56,7 +59,10 @@ export async function commandJobs(ctx: Context){
    // Mostramos el primer resultado con los botones de paginación
    const firstJob = jobs[0];
    const jobText = generateJobText(firstJob!, 0, jobs.length);
-   const keyboard = generatePaginationButtons(defaultFilters, 0, jobs.length);
+
+   // Se verifica si el primer empleo está en favoritos del usuario para mostrar el botón contextual
+   const isFavorite = ctx.from ? await favoriteService.isFavorite(ctx.from.id, firstJob!.id) : false;
+   const keyboard = generatePaginationButtons(defaultFilters, 0, jobs.length, isFavorite);
 
    await ctx.reply(jobText, {
       parse_mode: 'Markdown',

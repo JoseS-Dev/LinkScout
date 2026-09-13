@@ -1,9 +1,11 @@
 import { Context } from 'telegraf';
+import { FavoriteService } from '../services/favoriteService.js';
 import { extractJobsFromRemoteok } from '../services/scraper.js';
 import { generateJobText, generatePaginationButtons } from '../utils/pagination.js';
 import { parsePaginationData } from '../utils/functions.js';
 import { logger } from '../config/pino/logger.js';
 
+const favoriteService = new FavoriteService();
 
 // Función para manejar los botones de paginación con los empleos
 export async function handlePagination(ctx: Context){
@@ -29,8 +31,12 @@ export async function handlePagination(ctx: Context){
     if(results.length === 0 || !results[page]) return;
 
     const actuallyJob = results[page];
+
+    // Se verifica si el empleo actual está en favoritos del usuario
+    const isFavorite = ctx.from ? await favoriteService.isFavorite(ctx.from.id, actuallyJob.id) : false;
+
     const jobText = generateJobText(actuallyJob, page, results.length);
-    const keyboard = generatePaginationButtons(filters, page, results.length);
+    const keyboard = generatePaginationButtons(filters, page, results.length, isFavorite);
 
     try{
         await ctx.editMessageText(jobText, {

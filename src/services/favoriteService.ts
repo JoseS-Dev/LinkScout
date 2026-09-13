@@ -59,6 +59,18 @@ export class FavoriteService {
         return false;
     }
 
+    // Método para verificar si un empleo está en los favoritos de un usuario
+    async isFavorite(userId: number, jobId: string) {
+        const favorite = await prisma.favorite.findFirst({
+            where: {
+                userId: BigInt(userId),
+                jobId: jobId
+            },
+            select: { id: true }
+        });
+        return Boolean(favorite);
+    }
+
     // Método para eliminar un favorito por su ID de la base de datos
     async removeFavoriteById(userId: number, favId: number) {
         const deletedFavorite = await prisma.favorite.deleteMany({
