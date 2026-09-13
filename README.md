@@ -92,7 +92,7 @@ pnpm dev
 
 ## Futuras implementaciones
 
-- [ ] Botón ❌ contextual en `/jobs` (estado del favorito por vacante vía lookup en BD)
+- [x] Botón ❌ contextual en `/jobs` (estado del favorito por vacante vía lookup en BD)
 - [ ] Notificaciones programadas: alertas diarias/semanales de nuevas ofertas
 - [ ] Comando `/subscribe` para recibir actualizaciones automáticas por categoría
 - [ ] Cache de resultados en memoria para evitar pegar a la API en cada paginación
