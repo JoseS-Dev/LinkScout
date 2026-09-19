@@ -30,3 +30,13 @@ export interface RemoteOkResponse {
     salary_max?: number;
     date?: string;
 }
+
+// Se define la interfaz para las alertas
+export type Frecuency = "Diario" | "Semanal" | "Mensual";
+
+export interface AlertCreate {
+    userId: bigint;
+    terms: string;
+    minSalary?: string;
+    frecuency: Frecuency;
+}
