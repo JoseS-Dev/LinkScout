@@ -1,6 +1,7 @@
 import { Telegraf } from "telegraf";
 import { config } from "./config/config.js";
 import { logger } from "./config/pino/logger.js";
+import { cronAlert } from "./cron/AlertCron.js";
 import { registerCommands } from "./commands/index.js";
 
 if(!config.botTelegramToken){
@@ -11,6 +12,8 @@ if(!config.botTelegramToken){
 const bot = new Telegraf(config.botTelegramToken);
 
 registerCommands(bot);
+
+cronAlert(bot);
 
 bot.launch()
 logger.info("Bot de Telegram iniciado correctamente.");
