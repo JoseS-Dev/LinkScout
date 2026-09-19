@@ -12,6 +12,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Frecuency {
+  Diario
+  Semanal
+  Mensual
+}
+
 // Modelo de los ususarios que interactúan con el bot de Telegram
 model User {
   id BigInt @id
@@ -19,6 +25,7 @@ model User {
   createdAt DateTime @default(now())
 
   favorites Favorite[]
+  alerts Alert[]
 
   @@map("users")
 }
@@ -39,4 +46,18 @@ model Favorite {
 
   @@unique([userId, jobId])
   @@map("favorites")
+}
+
+// Modelo para las alertas de los usuarios programadas
+model Alert {
+  id Int @id @default(autoincrement())
+  userId BigInt
+  terms String
+  minSalary String?
+  frecuency Frecuency @default(Diario)
+  isActive Boolean @default(true)
+  lastSentAt DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }
