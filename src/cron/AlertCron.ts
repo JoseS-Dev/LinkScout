@@ -1,5 +1,6 @@
 import cron from "node-cron";
 import { Telegraf } from "telegraf";
+import { config } from "../config/config.js";
 import { logger } from "../config/pino/logger.js";
 import { AlertService } from "../services/AlertService.js";
 import { extractJobsFromRemoteok } from "../services/scraper.js";
@@ -16,7 +17,7 @@ const FREQUENCY_CONFIG: Record<Frecuency, { periodMs: number; daysOfSeniority: n
 
 // Cron-Job para enviar alertas a los usuarios de Telegram según sus preferencias
 export function cronAlert(bot: Telegraf){
-    cron.schedule("*/1 * * * *", async () => {
+    cron.schedule(config.cronJobAlert, async () => {
         logger.info("Iniciando el cron-job de alertas...");
         try{
             const alerts = await alertService.getAlertsByActive();

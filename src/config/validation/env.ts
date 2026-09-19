@@ -11,7 +11,8 @@ export const envSchema = createEnv({
         TELEGRAM_BOT_TOKEN: z.string().min(1, "TELEGRAM_BOT_TOKEN is required"),
         PORT: z.coerce.number().default(3000),
         DATABASE_URL: z.string().url().default("postgresql://user:password@localhost:5432/dbname"),
-        API_REMOTEOK: z.string().url().default("https://prueba.com/api")
+        API_REMOTEOK: z.string().url().default("https://prueba.com/api"),
+        CRON_JOB_ALERT: z.string().default("0 9 * * *")
     },
     client: {},
     clientPrefix: 'VITE_',

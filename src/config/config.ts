@@ -5,5 +5,6 @@ export const config = {
     databaseUrl: envSchema.DATABASE_URL,
     botTelegramToken: envSchema.TELEGRAM_BOT_TOKEN,
     nodeEnv: envSchema.NODE_ENV,
-    apiRemoteOk: envSchema.API_REMOTEOK
+    apiRemoteOk: envSchema.API_REMOTEOK,
+    cronJobAlert: envSchema.CRON_JOB_ALERT
 }
