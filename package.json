@@ -10,7 +10,8 @@
     "start:": "cross-env NODE_ENV=production node dist/app.js",
     "prisma:migrate": "cross-env NODE_ENV=development prisma migrate dev",
     "prisma:generate": "cross-env NODE_ENV=development prisma generate",
-    "prisma:reset": "cross-env NODE_ENV=development prisma migrate reset"
+    "prisma:reset": "cross-env NODE_ENV=development prisma migrate reset",
+    "prisma:prod": "cross-env NODE_ENV=production prisma migrate deploy"
   },
   "keywords": [],
   "author": "JoseS-Dev",
