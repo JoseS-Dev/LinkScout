@@ -10,6 +10,7 @@ export async function commandStart(ctx: Context){
       `Soy *LinkScout*, tu bot para encontrar empleos remotos.\n\n` +
       `📌 *Comandos principales:*\n` +
       `/jobs <término> - Busca ofertas con filtros opcionales (min:, max:, tag:, dias:)\n` +
+      `/alert <término> <salario> <Diario|Semanal|Mensual> - Crea alertas programadas\n` +
       `/favorites - Consulta y gestiona tus vacantes favoritas\n` +
       `/help - Muestra todos los comandos`,
       { parse_mode: 'Markdown' }
