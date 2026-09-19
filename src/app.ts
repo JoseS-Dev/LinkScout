@@ -1,3 +1,4 @@
+import http from "http";
 import { Telegraf } from "telegraf";
 import { config } from "./config/config.js";
 import { logger } from "./config/pino/logger.js";
@@ -16,9 +17,16 @@ registerCommands(bot);
 cronAlert(bot);
 
 bot.launch()
-logger.info("Bot de Telegram iniciado correctamente.");
 
-logger.info("Esperando señales de terminación...");
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("El bot de Telegram está en funcionamiento.\n");
+});
+
+server.listen(config.port, () => {
+    logger.info(`Servidor HTTP escuchando en el puerto ${config.port}`);
+    logger.info(`Bot de Telegram iniciado en modo ${config.nodeEnv}`);
+});
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
