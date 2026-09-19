@@ -32,5 +32,6 @@ LinkScout is a Telegram bot (Telegraf) that fetches remote-job listings from the
 - `src/types/root.ts` — shared interfaces.
 
 ## Gotchas
-- `package.json` has no `build` script and `dist` is not produced (tsconfig `outDir`/`rootDir` are commented out); `start:` (trailing-colon typo) points at a nonexistent `dist/app.js`. Use `pnpm dev`; the prod path is not wired up.
+- `pnpm build` runs `prisma generate` then `tsc` emitting to `dist/` (tsconfig has `rootDir: ./src` + `outDir: ./dist` active). `pnpm start` runs `dist/app.js`. Note: `prisma.config.ts` is excluded from the tsc build (outside `rootDir`) — only Prisma CLI loads it.
+- Production start needs `TELEGRAM_BOT_TOKEN` in `.env.production` (local file only has `DATABASE_URL`); without it the env validation crashes with `process.exit(1)`. Don't copy the token from `.env.development` into the repo.
 - `playwright` is an effectively unused dependency.
