@@ -26,6 +26,7 @@ model User {
 
   favorites Favorite[]
   alerts Alert[]
+  subscriptions Subscription[]
 
   @@map("users")
 }
@@ -60,4 +61,17 @@ model Alert {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
+}
+
+// Modelo de Subscripcion a una categoria
+model Subscription {
+  id Int @id @default(autoincrement())
+  userId BigInt
+  category String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, category])
+  @@map("subscriptions")
 }
