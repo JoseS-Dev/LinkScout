@@ -1,9 +1,9 @@
 import { Context } from 'telegraf';
-import { FavoriteService } from '../services/favoriteService.js';
-import { extractJobsFromRemoteok } from '../services/scraper.js';
-import { generateJobText, generatePaginationButtons } from '../utils/pagination.js';
-import { parsePaginationData } from '../utils/functions.js';
-import { logger } from '../config/pino/logger.js';
+import { FavoriteService } from '../../services/favoriteService.js';
+import { extractJobsFromRemoteok } from '../../services/scraper.js';
+import { generateJobText, generatePaginationButtons } from '../../utils/pagination.js';
+import { parsePaginationData } from '../../utils/functions.js';
+import { logger } from '../../config/pino/logger.js';
 
 const favoriteService = new FavoriteService();
 

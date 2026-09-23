@@ -1,6 +1,6 @@
 import { Context } from 'telegraf';
-import { AlertService } from '../services/AlertService.js';
-import type { Frecuency } from '../types/root.js';
+import { AlertService } from '../../services/AlertService.js';
+import type { Frecuency } from '../../types/root.js';
 
 const alertService = new AlertService();
 
