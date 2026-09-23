@@ -12,6 +12,7 @@ export async function commandStart(ctx: Context){
       `/jobs <término> - Busca ofertas con filtros opcionales (min:, max:, tag:, dias:)\n` +
       `/alert <término> <salario> <Diario|Semanal|Mensual> - Crea alertas programadas\n` +
       `/favorites - Consulta y gestiona tus vacantes favoritas\n` +
+      `/subscribe - Suscríbete a categorías específicas\n` +
       `/help - Muestra todos los comandos`,
       { parse_mode: 'Markdown' }
    );
