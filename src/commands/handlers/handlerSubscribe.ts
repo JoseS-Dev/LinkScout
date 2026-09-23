@@ -6,10 +6,8 @@ const subscriptionService = new SubscriptionService();
 
 // Función para manejar la suscripción a categorías
 export async function handleSubscribe(ctx: Context){
-    if(!ctx.callbackQuery || !('data' in ctx.callbackQuery)) return;
-
     const buttons = CATEGORIES_AVAILABLE.map(category => {
-        return Markup.button.callback(category.label, `subscribe:${category.id}`);
+        return [Markup.button.callback(category.label, `subscribe:${category.id}`)];
     });
 
     await ctx.reply(
